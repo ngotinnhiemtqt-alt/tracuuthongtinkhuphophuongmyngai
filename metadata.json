@@ -1,0 +1,6 @@
+{
+  "name": "Tra cứu thông tin Khu phố Phường Mỹ Ngãi",
+  "description": "Tra cứu thông tin khu phố, liên hệ, hành chính phường Mỹ Ngãi, tỉnh Đồng Tháp.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
