@@ -8,8 +8,6 @@ export interface Neighborhood {
   leader: string;
   phone: string;
   address: string;
-  mapX?: number;
-  mapY?: number;
 }
 
 export interface Headquarter {

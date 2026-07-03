@@ -10,17 +10,17 @@ export function Home() {
   const [selectedHq, setSelectedHq] = useState<Headquarter | null>(null);
 
   useEffect(() => {
-    fetch('/data.json')
+    fetch('/api/data')
       .then(r => r.json())
       .then(setData)
       .catch(console.error);
   }, []);
 
-  const filtered = data?.neighborhoods.filter(n => {
+  const filtered = (data?.neighborhoods || []).filter(n => {
     const q = search.toLowerCase();
     return n.newName.toLowerCase().includes(q) || 
            n.oldNames.some(old => old.toLowerCase().includes(q));
-  }) || [];
+  });
 
   const exportPDF = () => {
     window.print();
@@ -59,34 +59,11 @@ export function Home() {
       </section>
 
       {/* Info graphics */}
-      <section className="grid md:grid-cols-2 gap-8 print:hidden">
+      <section className="print:hidden">
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center">
-          <h3 className="font-semibold text-lg mb-4 text-slate-800 text-center">Bản đồ Hành chính Phường Mỹ Ngãi</h3>
-          <div className="w-full bg-slate-100 rounded-xl overflow-hidden border border-slate-200 flex items-center justify-center text-slate-400 p-2 relative">
+          <h3 className="font-semibold text-xl mb-6 text-slate-800 text-center">Bản đồ Hành chính Phường Mỹ Ngãi</h3>
+          <div className="w-full bg-slate-100 rounded-xl overflow-hidden border border-slate-200 flex items-center justify-center text-slate-400 p-2 max-w-4xl mx-auto">
              <img src="/map.jpg" alt="Bản đồ Hành chính Phường Mỹ Ngãi" className="w-full h-auto object-contain rounded-lg" />
-             {data?.neighborhoods.map(nh => (
-               nh.mapX !== undefined && nh.mapY !== undefined ? (
-                 <button
-                   key={nh.id}
-                   onClick={() => setSelected(nh)}
-                   className="absolute transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center flex-col group z-10"
-                   style={{ left: `${nh.mapX}%`, top: `${nh.mapY}%` }}
-                 >
-                   <div className="bg-red-500/90 text-white rounded-full p-1.5 shadow-md group-hover:bg-red-600 group-hover:scale-110 transition-all cursor-pointer">
-                     <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
-                   </div>
-                   <span className="bg-white/95 text-slate-800 text-[10px] sm:text-xs px-2 py-0.5 rounded shadow-sm font-bold mt-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                     {nh.newName}
-                   </span>
-                 </button>
-               ) : null
-             ))}
-          </div>
-        </div>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center">
-          <h3 className="font-semibold text-lg mb-4 text-slate-800 text-center">Infographic Sắp xếp Khu phố</h3>
-          <div className="w-full bg-slate-100 rounded-xl overflow-hidden border border-slate-200 flex items-center justify-center text-slate-400 p-2">
-             <img src="/infographic.jpg" alt="Infographic Sắp xếp Khu phố" className="w-full h-auto object-contain rounded-lg" />
           </div>
         </div>
       </section>

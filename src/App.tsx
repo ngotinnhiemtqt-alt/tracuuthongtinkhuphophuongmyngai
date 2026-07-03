@@ -1,47 +1,12 @@
 import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { Home } from './components/Home';
-import { MessageSquare, LayoutDashboard, LogOut } from 'lucide-react';
+import { AdminLogin } from './components/AdminLogin';
+import { AdminDashboard } from './components/AdminDashboard';
+import { MessageSquare, LayoutDashboard } from 'lucide-react';
 import { ChatWidget } from './components/ChatWidget';
-import { useEffect, useState } from 'react';
-import { initAuth, googleSignIn, logout } from './lib/auth';
-import { GoogleSignInButton } from './components/GoogleSignInButton';
-import type { User } from 'firebase/auth';
 
 function Layout() {
   const navigate = useNavigate();
-  const [needsAuth, setNeedsAuth] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    const unsubscribe = initAuth(
-      (authUser) => {
-        setUser(authUser);
-        setNeedsAuth(false);
-      },
-      () => {
-        setUser(null);
-        setNeedsAuth(true);
-      }
-    );
-    return () => unsubscribe();
-  }, []);
-
-  const handleLogin = async () => {
-    try {
-      const result = await googleSignIn();
-      if (result) {
-        setUser(result.user);
-        setNeedsAuth(false);
-      }
-    } catch (err) {
-      console.error('Login failed:', err);
-    }
-  };
-
-  const handleLogout = async () => {
-    await logout();
-  };
-
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       <header className="bg-blue-700 text-white shadow-md sticky top-0 z-40">
@@ -57,20 +22,9 @@ function Layout() {
             </div>
           </Link>
           <nav className="flex items-center gap-4">
-            {user ? (
-              <div className="flex items-center gap-4">
-                <span className="text-sm font-medium hidden sm:block" title={user.email || ''}>{user.displayName}</span>
-                <button 
-                  onClick={handleLogout}
-                  className="p-2 hover:bg-blue-600 rounded-full transition-colors"
-                  title="Đăng xuất"
-                >
-                  <LogOut className="w-5 h-5" />
-                </button>
-              </div>
-            ) : needsAuth ? (
-              <GoogleSignInButton onClick={handleLogin} />
-            ) : null}
+            <Link to="/admin/login" className="text-sm font-medium hover:text-blue-200 transition-colors hidden sm:block">
+              Quản trị viên
+            </Link>
           </nav>
         </div>
       </header>
@@ -78,6 +32,8 @@ function Layout() {
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </main>
 
